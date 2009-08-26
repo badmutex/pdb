@@ -1,0 +1,12 @@
+name: pdb
+version: 0.1
+stability: alpha
+synopsis: Read a Protein Databank file into a graph
+category: Bioinformatics, Data Structures, Parsing, Text
+license: BSD3
+author: Badi' Abdul-Wahid
+maintainer: abdulwahidc@gmail.com
+build-types: Symple
+cabal-version: >= 1.2
+
+
