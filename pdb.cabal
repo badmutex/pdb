@@ -6,7 +6,19 @@ category: Bioinformatics, Data Structures, Parsing, Text
 license: BSD3
 author: Badi' Abdul-Wahid
 maintainer: abdulwahidc@gmail.com
-build-types: Symple
+build-type: Simple
 cabal-version: >= 1.2
 
 
+Library
+    build-depends:
+          base   >= 4.0
+        , parsec >= 2.1.0.0
+        , fgl    >= 5.4.0.0
+    exposed-modules:
+        Text.Bio.PDB
+        Text.Bio.PDB.Parser
+        Text.Bio.PDB.Helix
+        Text.Bio.PDB.Residue
+        Text.Bio.PDB.Misc
+        Text.Bio.PDB.Seqres

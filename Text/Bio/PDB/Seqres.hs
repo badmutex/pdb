@@ -1,5 +1,6 @@
 module Text.Bio.PDB.Seqres where
 
+import Chem.Chemistry
 import Text.Bio.PDB.Misc
 import Text.Bio.PDB.Residue
 
@@ -35,11 +36,11 @@ resName = residue
 
 -- | All the residue in the line from the current point.
 -- Alias for 'Text.Bio.PDB.Residue.residues'
-theResidues :: GenParser Char st [String]
+theResidues :: Residue r => GenParser Char st [r]
 theResidues = residues
 
 -- | get the sequence of residues for the current line.
-seqres :: GenParser Char st [String]
+seqres :: Residue r => GenParser Char st [r]
 seqres = do
   fieldName    ; spaces
   serialNumber ; spaces

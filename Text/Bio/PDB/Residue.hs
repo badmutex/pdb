@@ -1,8 +1,13 @@
+{-# LANGUAGE NoMonomorphismRestriction #-}
+
 module Text.Bio.PDB.Residue where
+
+import Chem.Chemistry
 
 import Text.ParserCombinators.Parsec
 
 -- | The 20 amino acids potentially found in a PDB file.
+residue :: GenParser Char st String
 residue =     try (string "ALA")
           <|> try (string "ARG")
           <|> try (string "ASN")
@@ -26,5 +31,8 @@ residue =     try (string "ALA")
           <|> try (string "VAL")
           <?> "capitalized three-letter amino-acid symbols"
 
--- | Given a line containing residues, return them in list form
-residues = residue `sepEndBy` spaces
+-- | test
+residues :: Residue r => GenParser Char st [r]
+residues = do
+  r <- residue `sepEndBy` spaces
+  return $ map readResidue r
