@@ -1,5 +1,7 @@
 {-# LANGUAGE
-  NoMonomorphismRestriction
+  FlexibleInstances
+  , NoMonomorphismRestriction
+  , TypeSynonymInstances
   #-}
 
 module PDB.Format.Parser where
@@ -7,6 +9,7 @@ module PDB.Format.Parser where
 import PDB.Format.Types
 
 import Text.ParserCombinators.Parsec
+import Data.Monoid
 
 -- | Platform (Windows, *nix) agnostic line terminator
 eol :: Parser String
@@ -16,19 +19,20 @@ eol =     try (string "\n\r")
       <|> string "\r"
       <?> "end of line"
 
+instance Monoid (Parser String) where
+    mempty = option "" (many anyChar)
+    mappend p1 p2 = do
+      p1' <- p1
+      p2' <- p2
+      return $ p1' ++ p2'
 
--- | Join parsers. TODO: Implement as Arrow?
-pjoin f p1 p2 = do
-  v1 <- p1
-  v2 <- p2
-  return $ v1 `f` v2
-
-(<++>) = pjoin (++)
+(<++>) :: (Monoid a) => a -> a -> a
+l <++> r = mconcat [l,r]
 
 positiveInt = many digit
 negativeInt = option "" (string "-") <++> positiveInt
 
--- | Parsed (-/+) integers
+-- | Parse (-/+) integers
 integral :: (Integral i, Read i) => Parser i
 integral = (negativeInt <|> positiveInt) >>= return . read
 

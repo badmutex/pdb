@@ -13,9 +13,10 @@ cabal-version: >= 1.2
 Library
     build-depends:
           base   >= 4.0
-        , parsec >= 2.1.0.0
+        , parsec >= 3.0.0
         , fgl    >= 5.4.0.0
     exposed-modules:
         PDB.Chemistry
+        PDB.Format.Parser
         PDB.Format.Types
         PDB.Format.Sections.Header
