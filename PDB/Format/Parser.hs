@@ -10,6 +10,7 @@ import PDB.Format.Types
 
 import Text.ParserCombinators.Parsec
 import Data.Monoid
+import Data.Char
 
 -- | Platform (Windows, *nix) agnostic line terminator
 eol :: Parser String
@@ -28,6 +29,8 @@ instance Monoid (Parser String) where
 
 (<++>) :: (Monoid a) => a -> a -> a
 l <++> r = mconcat [l,r]
+
+
 
 positiveInt = many digit
 negativeInt = option "" (string "-") <++> positiveInt
@@ -61,4 +64,33 @@ continuation =
     >>= return . Continuation
 
 date :: Parser Date
-date = undefined
+date = do
+  d <- count 2 digit
+  char '-'
+  m <- monthP
+  char '-'
+  y0 <- digit
+  y1 <- digit
+  return $ Date { day = read d
+                , month = m
+                , year = readYear y0 y1 }
+      where
+        readYear '0' y = 2000 + read [y]
+        readYear '1' y = readYear '0' y + 10
+        readYear  c  y = 1900 + read [c,y]
+
+        monthP :: Parser Int
+        monthP = let months = [ ("Jan",1), ("Feb",2), ("Mar",3), ("Apr",4)
+                              , ("May",5), ("Jun",6), ("Jul",7), ("Aug",8)
+                              , ("Sep",9), ("Oct",10), ("Nov",11), ("Dec",12) ]
+
+                     p :: [(String, Int)] -> Parser Int
+                     p = foldr1 (<|>) . map (try . pmonth)
+
+                     pmonth :: (String,Int) -> Parser Int
+                     pmonth (m,c) = string m >> return c
+
+                     mapMonths f = map (\(m,c) -> (map f m, c))
+                     upper = mapMonths toUpper
+                     lower = mapMonths toLower
+                 in p $ upper months ++ lower months ++ months
