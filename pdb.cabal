@@ -18,5 +18,6 @@ Library
     exposed-modules:
         PDB.Chemistry
         PDB.Format.Parser
+        PDB.Format.Peano
         PDB.Format.Types
         PDB.Format.Sections.Header
