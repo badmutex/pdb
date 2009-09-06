@@ -1,8 +1,10 @@
 {-# LANGUAGE
   EmptyDataDecls
   , FlexibleContexts
+  , FunctionalDependencies
   , MultiParamTypeClasses
   , RankNTypes
+  , TypeSynonymInstances
   #-}
 
 -- | 
@@ -139,7 +141,7 @@ newtype LStringN a = LStringN String
     deriving (Eq, Ord, Read, Show)
 
 -- | Real (floating point) number in the  FORTRAN format Fn.m.
-newtype PDBRreal = PDBReal Double
+newtype PDBReal = PDBReal Double
     deriving (Eq, Ord, Read, Show)
 
 -- | The name of the record: 6 characters,  left-justified and
@@ -160,8 +162,8 @@ newtype SList = SList [String]
 -- | A String composed of a token and its  associated value
 -- separated by a colon.
 data Specification = Spec {
-      token :: Token
-    , value :: String
+      specToken :: Token
+    , specValue :: String
     }
     deriving (Eq, Ord, Read, Show)
 
@@ -186,6 +188,8 @@ newtype SymOP = SymOP Int
     deriving (Eq, Ord, Read, Show)
 
 
--- | Typed numerals for the counting phantom types
--- such as 'StringN' or 'LStringN'
-data Forty
+
+-- | A generic way to extract the data from the above data types.
+--
+-- @from (IDcode 42) == 42@
+class From a b | a -> b where from :: a -> b

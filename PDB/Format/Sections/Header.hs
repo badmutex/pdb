@@ -2,6 +2,7 @@
 module PDB.Format.Sections.Header where
 
 import PDB.Format.Types
+import PDB.Format.Peano
 
 
 -- |
@@ -21,7 +22,7 @@ import PDB.Format.Types
 
 data Header = Header {
       record         :: RecordName
-    , classification :: StringN Forty
+    , classification :: StringN P40
     , date           :: Date
     , idCode         :: IDcode
     }

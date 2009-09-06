@@ -1,46 +1,12 @@
-{-# LANGUAGE
-  FlexibleInstances
-  , NoMonomorphismRestriction
-  , TypeSynonymInstances
-  #-}
 
 module PDB.Format.Parser where
 
 import PDB.Format.Types
+import PDB.Format.ParsecMisc
+import qualified PDB.Format.Peano as Peano
 
-import Text.ParserCombinators.Parsec
-import Data.Monoid
+import Text.ParserCombinators.Parsec hiding (token)
 import Data.Char
-
--- | Platform (Windows, *nix) agnostic line terminator
-eol :: Parser String
-eol =     try (string "\n\r")
-      <|> try (string "\r\n")
-      <|> string "\n"
-      <|> string "\r"
-      <?> "end of line"
-
-instance Monoid (Parser String) where
-    mempty = option "" (many anyChar)
-    mappend p1 p2 = do
-      p1' <- p1
-      p2' <- p2
-      return $ p1' ++ p2'
-
-(<++>) :: (Monoid a) => a -> a -> a
-l <++> r = mconcat [l,r]
-
-
-
-positiveInt = many digit
-negativeInt = option "" (string "-") <++> positiveInt
-
--- | Parse (-/+) integers
-integral :: (Integral i, Read i) => Parser i
-integral = (negativeInt <|> positiveInt) >>= return . read
-
-
-
 
 
 achar :: Parser AChar
@@ -94,3 +60,79 @@ date = do
                      upper = mapMonths toUpper
                      lower = mapMonths toLower
                  in p $ upper months ++ lower months ++ months
+
+
+idcode :: Parser IDcode
+idcode = do
+  d <- digit
+  cs <- count 3 (digit <|> upper)
+  return $ IDcode (d : cs)
+
+pdbinteger :: Parser PDBInteger
+pdbinteger = many1 digit >>= return . PDBInteger . read
+
+token :: Parser Token
+token = noneOf [' '] `manyTill` string ": " >>= return . Token
+
+
+list :: Parser List
+list = many (anyChar `manyTill` end) >>= return . List
+    where end = char ',' <|> newline
+
+lstring :: Int -> Parser LString
+lstring s = count s anyChar >>= return . LString
+
+lstringn :: Int -> Parser (LStringN peanoNum)
+lstringn s = count s anyChar >>= return . LStringN
+
+
+pdbreal :: Parser PDBReal
+pdbreal = decimal >>= return . PDBReal
+
+recordname :: Parser RecordName
+recordname = choice cs >>= return . RecordName
+    where cs = map (\c -> try $ count c letter) (reverse [1..6])
+
+
+residuename :: Parser ResidueName
+residuename = residue >>= return . ResidueName
+    where 
+      -- | The 20 amino acids potentially found in a PDB file.
+      residue =     try (string "ALA")
+                <|> try (string "ARG")
+                <|> try (string "ASN")
+                <|> try (string "ASN")
+                <|> try (string "ASP")
+                <|> try (string "CYS")
+                <|> try (string "GLN")
+                <|> try (string "GLU")
+                <|> try (string "GLY")
+                <|> try (string "HIS")
+                <|> try (string "ILE")
+                <|> try (string "LEU")
+                <|> try (string "LYS")
+                <|> try (string "MET")
+                <|> try (string "PHE")
+                <|> try (string "PRO")
+                <|> try (string "SER")
+                <|> try (string "THR")
+                <|> try (string "TRP")
+                <|> try (string "TYR")
+                <|> try (string "VAL")
+                <?> "capitalized three-letter amino-acid symbols"
+
+-- | TODO: implement
+slist :: Parser SList
+slist = undefined
+
+-- | TODO: implement
+specification :: Parser Specification
+specification = undefined
+
+
+specificationlist :: Parser SpecificationList
+specificationlist = specification `manyTill` char ';' >>= return . SpecList
+
+
+pdbstring :: Parser PDBString
+pdbstring = undefined

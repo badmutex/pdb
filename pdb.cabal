@@ -20,4 +20,5 @@ Library
         PDB.Format.Parser
         PDB.Format.Peano
         PDB.Format.Types
+        PDB.Format.Instances
         PDB.Format.Sections.Header
