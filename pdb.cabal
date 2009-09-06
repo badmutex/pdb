@@ -17,8 +17,9 @@ Library
         , fgl    >= 5.4.0.0
     exposed-modules:
         PDB.Chemistry
-        PDB.Format.Parser
+        PDB.Format.ParserTools
         PDB.Format.Peano
         PDB.Format.Types
         PDB.Format.Instances
         PDB.Format.Sections.Header
+        PDB.Format.Sections.Title
