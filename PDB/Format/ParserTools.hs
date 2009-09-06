@@ -1,5 +1,5 @@
 
-module PDB.Format.Parser where
+module PDB.Format.ParserTools where
 
 import PDB.Format.Types
 import PDB.Format.ParsecMisc
@@ -136,3 +136,6 @@ specificationlist = specification `manyTill` char ';' >>= return . SpecList
 
 pdbstring :: Parser PDBString
 pdbstring = undefined
+
+stringn :: Int -> Parser (StringN peanonum)
+stringn c = count c anyChar >>= return . StringN

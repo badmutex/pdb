@@ -1,8 +1,11 @@
-
 module PDB.Format.Sections.Header where
 
 import PDB.Format.Types
-import PDB.Format.Peano
+import qualified PDB.Format.Peano as Peano
+import qualified PDB.Format.ParserTools as P
+import PDB.Format.ParsecMisc
+
+import Text.ParserCombinators.Parsec
 
 
 -- |
@@ -21,8 +24,21 @@ import PDB.Format.Peano
 --
 
 data Header = Header {
-      record         :: RecordName
-    , classification :: StringN P40
+      classification :: StringN Peano.P40
     , date           :: Date
-    , idCode         :: IDcode
-    }
+    , idcode         :: IDcode
+    } deriving (Read, Show)
+
+header :: Parser Header
+header = do
+  string "HEADER"
+  spaces
+  c <- P.stringn 40
+  d <- P.date
+  spaces
+  i <- P.idcode
+  eol
+  return Header { classification = c
+                , date           = d
+                , idcode         = i
+                }
