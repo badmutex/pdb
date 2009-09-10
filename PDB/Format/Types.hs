@@ -77,7 +77,7 @@
 
 module PDB.Format.Types where
 
-
+import PDB.Chemistry
 
 -- | An alphabetic character (A-Z, a-z)
 newtype AChar = AChar Char
@@ -193,3 +193,8 @@ newtype SymOP = SymOP Int
 --
 -- @from (IDcode 42) == 42@
 class From a b | a -> b where from :: a -> b
+
+class Residue r =>
+    PrimaryStructure s r where
+        mkPrimaryStructure :: [r] -> s r
+
