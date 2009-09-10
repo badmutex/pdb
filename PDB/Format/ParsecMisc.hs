@@ -47,3 +47,7 @@ decimal = do
   ds' <- many digit
   return . read $ ds ++ "." ++ ds'
   <?> "a fractional number"
+
+
+ignoreSection :: Parser a -> Parser ()
+ignoreSection = skipMany1
