@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fcontext-stack=50 #-}
+
 module PDB.Format.Sections.Header where
 
 import PDB.Format.Types
@@ -33,7 +35,7 @@ header :: Parser Header
 header = do
   string "HEADER"
   spaces
-  c <- P.stringn 40
+  c <- P.stringn Peano.p40
   d <- P.date
   spaces
   i <- P.idcode

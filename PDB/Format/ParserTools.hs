@@ -82,9 +82,11 @@ list = many (anyChar `manyTill` end) >>= return . List
 lstring :: Int -> Parser LString
 lstring s = count s anyChar >>= return . LString
 
-lstringn :: Int -> Parser (LStringN peanoNum)
-lstringn s = count s anyChar >>= return . LStringN
+-- lstringn :: Int -> Parser (LStringN peanoNum)
+-- lstringn s = count s anyChar >>= return . LStringN
 
+lstringn :: Peano.Count p => p -> Parser (LStringN p)
+lstringn = fmap LStringN . countPeanoChars
 
 pdbreal :: Parser PDBReal
 pdbreal = decimal >>= return . PDBReal
@@ -137,5 +139,8 @@ specificationlist = specification `manyTill` char ';' >>= return . SpecList
 pdbstring :: Parser PDBString
 pdbstring = undefined
 
-stringn :: Int -> Parser (StringN peanonum)
-stringn c = count c anyChar >>= return . StringN
+-- stringn :: Int -> Parser (StringN peanonum)
+-- stringn c = count c anyChar >>= return . StringN
+
+stringn :: Peano.Count p => p -> Parser (StringN p)
+stringn = fmap StringN . countPeanoChars

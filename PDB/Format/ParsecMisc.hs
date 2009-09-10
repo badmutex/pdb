@@ -7,6 +7,8 @@
 -- | Extra parsers and combinators to supplements those of Parsec.
 module PDB.Format.ParsecMisc where
 
+import qualified PDB.Format.Peano as Peano
+
 import Text.ParserCombinators.Parsec
 import Data.Monoid
 
@@ -51,3 +53,7 @@ decimal = do
 
 ignoreSection :: Parser a -> Parser ()
 ignoreSection = skipMany1
+
+
+countPeanoChars :: Peano.Count p => p -> Parser String
+countPeanoChars = flip count anyChar . Peano.count
