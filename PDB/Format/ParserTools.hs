@@ -144,3 +144,7 @@ pdbstring = undefined
 
 stringn :: Peano.Count p => p -> Parser (StringN p)
 stringn = fmap StringN . countPeanoChars
+
+goToColumn :: Column -> Parser ()
+goToColumn c = getPosition >>=
+               setPosition . flip setSourceColumn c

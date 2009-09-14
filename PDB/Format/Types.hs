@@ -194,7 +194,8 @@ newtype SymOP = SymOP Int
 -- @from (IDcode 42) == 42@
 class From a b | a -> b where from :: a -> b
 
+type ID = Integer
+
 class Residue r =>
     PrimaryStructure s r where
         mkPrimaryStructure :: [r] -> s r
-

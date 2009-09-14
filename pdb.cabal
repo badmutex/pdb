@@ -24,3 +24,4 @@ Library
         PDB.Format.Sections.Header
         PDB.Format.Sections.Title
         PDB.Format.Sections.Seqres
+        PDB.Format.Sections.Helix
